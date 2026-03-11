@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "main": "src/index.ts",
   "dependencies": {
-    "@mini-autostack/core": "*"
+    "@mini-autostack/core": "*",
+    "yaml": "^2.8.2"
   }
 }

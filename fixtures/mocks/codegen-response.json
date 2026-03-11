@@ -1,0 +1,25 @@
+{
+  "id": "msg_mock_codegen",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-sonnet-4-20250514",
+  "content": [
+    {
+      "type": "tool_use",
+      "id": "toolu_mock_3",
+      "name": "generate_components",
+      "input": {
+        "components": [
+          {
+            "name": "TodoApp",
+            "fileName": "TodoApp.tsx",
+            "tsx": "import React, { useState, useEffect } from 'react';\n\ninterface Todo {\n  id: number;\n  title: string;\n  completed: boolean;\n}\n\nexport default function TodoApp() {\n  const [todos, setTodos] = useState<Todo[]>([]);\n  const [newTodo, setNewTodo] = useState('');\n\n  useEffect(() => {\n    fetch('/todos').then(r => r.json()).then(setTodos);\n  }, []);\n\n  return (\n    <div className=\"min-h-screen bg-white\">\n      <header className=\"bg-blue-500 text-white p-4\">\n        <h1 className=\"text-2xl font-bold\">Todo App</h1>\n      </header>\n      <main className=\"max-w-2xl mx-auto p-4\">\n        <div className=\"flex gap-2 mb-4\">\n          <input\n            className=\"flex-1 border rounded px-3 py-2\"\n            value={newTodo}\n            onChange={(e) => setNewTodo(e.target.value)}\n            placeholder=\"Add a todo...\"\n          />\n          <button className=\"bg-blue-500 text-white px-4 py-2 rounded\">\n            Add\n          </button>\n        </div>\n        <ul className=\"space-y-2\">\n          {todos.map((todo) => (\n            <li key={todo.id} className=\"flex items-center gap-2 p-2 bg-gray-50 rounded\">\n              <input type=\"checkbox\" checked={todo.completed} />\n              <span>{todo.title}</span>\n            </li>\n          ))}\n        </ul>\n      </main>\n    </div>\n  );\n}",
+            "imports": ["react"]
+          }
+        ]
+      }
+    }
+  ],
+  "stop_reason": "tool_use",
+  "usage": { "input_tokens": 2000, "output_tokens": 600 }
+}
