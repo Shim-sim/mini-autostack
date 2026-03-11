@@ -1,0 +1,78 @@
+{
+  "id": "msg_mock_vision",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-sonnet-4-20250514",
+  "content": [
+    {
+      "type": "tool_use",
+      "id": "toolu_mock_1",
+      "name": "analyze_screenshot",
+      "input": {
+        "components": [
+          {
+            "role": "page",
+            "name": "TodoApp",
+            "description": "A simple todo list application",
+            "layout": "flex-col",
+            "children": [
+              {
+                "role": "section",
+                "name": "Header",
+                "description": "App header with title",
+                "layout": "flex-row"
+              },
+              {
+                "role": "section",
+                "name": "TodoInput",
+                "description": "Input form for adding new todos",
+                "layout": "flex-row"
+              },
+              {
+                "role": "section",
+                "name": "TodoList",
+                "description": "List of todo items",
+                "layout": "flex-col"
+              }
+            ]
+          }
+        ],
+        "entities": [
+          {
+            "name": "Todo",
+            "description": "A todo item",
+            "fields": [
+              { "name": "title", "type": "string", "description": "Todo title text", "isRequired": true },
+              { "name": "completed", "type": "boolean", "description": "Whether the todo is completed", "isRequired": true },
+              { "name": "dueDate", "type": "date", "description": "Optional due date", "isRequired": false }
+            ],
+            "relations": []
+          },
+          {
+            "name": "User",
+            "description": "The user who owns the todos",
+            "fields": [
+              { "name": "email", "type": "string", "description": "User email", "isRequired": true, "isUnique": true },
+              { "name": "name", "type": "string", "description": "User display name", "isRequired": true }
+            ],
+            "relations": [
+              { "targetEntity": "Todo", "type": "one-to-many", "description": "User has many todos" }
+            ]
+          }
+        ],
+        "palette": {
+          "primary": "#3B82F6",
+          "secondary": "#6366F1",
+          "background": "#FFFFFF",
+          "surface": "#F3F4F6",
+          "text": "#1F2937",
+          "accent": "#10B981"
+        },
+        "layoutType": "list",
+        "description": "A todo list application with header, input form, and scrollable list of todo items"
+      }
+    }
+  ],
+  "stop_reason": "tool_use",
+  "usage": { "input_tokens": 1500, "output_tokens": 400 }
+}

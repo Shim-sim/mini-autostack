@@ -1,1 +1,2 @@
-// Compiler exports will be added as compilers are implemented
+export { PrismaValidator } from "./prisma/validator.js";
+export { extractModelNames, extractModelFields } from "./prisma/parser.js";
