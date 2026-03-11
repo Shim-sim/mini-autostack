@@ -1,0 +1,19 @@
+{
+  "name": "mini-autostack",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "dev": "ts-node packages/cli/src/index.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0",
+    "vitest": "^3.0.0",
+    "ts-node": "^10.9.0"
+  }
+}

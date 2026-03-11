@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "paths": {
+      "@mini-autostack/core": ["./packages/core/src"],
+      "@mini-autostack/agents": ["./packages/agents/src"],
+      "@mini-autostack/compilers": ["./packages/compilers/src"]
+    }
+  },
+  "include": ["packages/*/src/**/*.ts", "tests/**/*.ts"]
+}

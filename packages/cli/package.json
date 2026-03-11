@@ -1,0 +1,13 @@
+{
+  "name": "@mini-autostack/cli",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@mini-autostack/core": "*",
+    "@mini-autostack/agents": "*",
+    "@mini-autostack/compilers": "*",
+    "commander": "^13.0.0",
+    "chalk": "^5.0.0",
+    "dotenv": "^16.0.0"
+  }
+}

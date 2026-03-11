@@ -1,0 +1,9 @@
+{
+  "name": "@mini-autostack/agents",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@mini-autostack/core": "*",
+    "@anthropic-ai/sdk": "^0.39.0"
+  }
+}
