@@ -1,15 +1,18 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { Pipeline } from "./pipeline.js";
+import { scaffoldProject } from "./scaffold.js";
 
 async function main() {
   const args = process.argv.slice(2);
 
-  // 간단한 CLI 인자 파싱
   const imageIndex = args.indexOf("--image");
   if (imageIndex === -1 || !args[imageIndex + 1]) {
     console.error("Usage: mini-autostack --image <path-to-screenshot>");
-    console.error("Example: mini-autostack --image ./screenshot.png");
+    console.error("");
+    console.error("Options:");
+    console.error("  --image <path>    Path to Figma screenshot (PNG/JPG/WebP)");
+    console.error("  --output <dir>    Output directory (default: ./output)");
     process.exit(1);
   }
 
@@ -18,6 +21,11 @@ async function main() {
     console.error(`File not found: ${imagePath}`);
     process.exit(1);
   }
+
+  const outIndex = args.indexOf("--output");
+  const outDir = path.resolve(
+    outIndex !== -1 && args[outIndex + 1] ? args[outIndex + 1] : "./output",
+  );
 
   // .env 로드
   try {
@@ -31,56 +39,48 @@ async function main() {
         if (eqIdx > 0) {
           const key = trimmed.slice(0, eqIdx).trim();
           const value = trimmed.slice(eqIdx + 1).trim();
-          if (!process.env[key]) {
-            process.env[key] = value;
-          }
+          if (!process.env[key]) process.env[key] = value;
         }
       }
     }
   } catch {
-    // .env loading is best-effort
+    // best-effort
   }
 
   if (!process.env.ANTHROPIC_API_KEY) {
-    console.error("ANTHROPIC_API_KEY not set. Create a .env file or set the environment variable.");
+    console.error(
+      "ANTHROPIC_API_KEY not set. Create a .env file or set the environment variable.",
+    );
     process.exit(1);
   }
 
-  console.log(`\nMini AutoStack — Generating fullstack code from screenshot\n`);
-  console.log(`Image: ${imagePath}\n`);
+  console.log("\n  Mini AutoStack\n");
+  console.log(`  Image:  ${imagePath}`);
+  console.log(`  Output: ${outDir}\n`);
 
   const pipeline = new Pipeline({ verbose: true });
 
   try {
-    const result = await pipeline.run(imagePath);
+    const { output, vision } = await pipeline.run(imagePath);
 
-    console.log("\n========== RESULTS ==========\n");
-    console.log(`Prisma Schema (${result.prismaSchema.split("\n").length} lines)`);
-    console.log(`OpenAPI Spec (${result.openApiSpec.split("\n").length} lines)`);
-    console.log(`Components: ${result.components.map((c) => c.name).join(", ")}`);
-    console.log(`Tokens: ${result.totalTokens.input} input, ${result.totalTokens.output} output`);
-    console.log(`Time: ${(result.elapsedMs / 1000).toFixed(1)}s`);
-    console.log(`Events: ${result.events.length}`);
+    // Scaffold: Vite + React + TailwindCSS 프로젝트 생성
+    console.log("\n  Scaffolding project...\n");
+    scaffoldProject(outDir, output, vision);
 
-    // 결과 파일 출력
-    const outDir = path.resolve(process.cwd(), "output");
-    fs.mkdirSync(outDir, { recursive: true });
-
-    fs.writeFileSync(
-      path.join(outDir, "schema.prisma"),
-      result.prismaSchema,
-    );
-    fs.writeFileSync(
-      path.join(outDir, "openapi.yaml"),
-      result.openApiSpec,
-    );
-    for (const comp of result.components) {
-      fs.writeFileSync(path.join(outDir, comp.fileName), comp.tsx);
-    }
-
-    console.log(`\nOutput written to: ${outDir}`);
+    console.log("  ========== DONE ==========\n");
+    console.log(`  Prisma Schema : ${output.prismaSchema.split("\n").length} lines`);
+    console.log(`  OpenAPI Spec  : ${output.openApiSpec.split("\n").length} lines`);
+    console.log(`  Components    : ${output.components.map((c) => c.name).join(", ")}`);
+    console.log(`  Heal attempts : ${output.iterations}`);
+    console.log(`  Tokens        : ${output.totalTokens.input} in / ${output.totalTokens.output} out`);
+    console.log(`  Time          : ${(output.elapsedMs / 1000).toFixed(1)}s`);
+    console.log(`  Events        : ${output.events.length}`);
+    console.log(`\n  Run your app:\n`);
+    console.log(`    cd ${outDir}`);
+    console.log(`    npm install`);
+    console.log(`    npm run dev\n`);
   } catch (error) {
-    console.error("\nPipeline failed:", error);
+    console.error("\n  Pipeline failed:", error);
     process.exit(1);
   }
 }
